@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { request } from '@/api/client'
+import ReviewWorkbench from './review/ReviewWorkbench'
 
 const ENDPOINT = '/api/cleanse'
 const columns = [
@@ -17,12 +18,6 @@ const actions = [
   "提交校验",
   "启用规则",
   "停用规则"
-]
-const statuses = [
-  "草稿",
-  "待校验",
-  "已启用",
-  "已停用"
 ]
 const stats = [
   {
@@ -41,7 +36,7 @@ const stats = [
 
 type Row = Record<string, string | number | null>
 
-export default function CleanseView() {
+function RuleListTab() {
   const [rows, setRows] = useState<Row[]>([])
   const [total, setTotal] = useState(0)
   const [errorMessage, setErrorMessage] = useState('')
@@ -85,22 +80,7 @@ export default function CleanseView() {
   }
 
   return (
-    <section className="page" data-module="cleanse">
-      <header className="page-head">
-        <div>
-          <h2>数据清洗管理</h2>
-          <p className="page-desc">维护数据清洗规则的输入、执行约束与结果记录，为采集后清洗提供可验证的数据工程流程。</p>
-        </div>
-        <div className="page-actions">
-          <button className="btn primary" type="button" onClick={() => setErrorMessage('清洗规则登记入口尚未接入审批流')}>
-            登记清洗规则
-          </button>
-          <button className="btn" type="button" onClick={() => window.open(`${ENDPOINT}/export`, '_blank')}>
-            导出数据清洗清单
-          </button>
-        </div>
-      </header>
-
+    <>
       <div className="stat-row">
         {stats.map((item) => (
           <article key={item.label} className="stat-card">
@@ -157,6 +137,45 @@ export default function CleanseView() {
         <span>共 {total} 条数据清洗记录</span>
         {errorMessage && <span className="error-text">{errorMessage}</span>}
       </footer>
+    </>
+  )
+}
+
+export default function CleanseView() {
+  const [tab, setTab] = useState<'review' | 'rules'>('review')
+  return (
+    <section className="page" data-module="cleanse">
+      <header className="page-head">
+        <div>
+          <h2>数据清洗管理</h2>
+          <p className="page-desc">维护数据清洗规则的输入、执行约束与结果记录，并在候选版本对照台中完成预演、逐条核对与快照确认。</p>
+        </div>
+        <div className="page-actions">
+          <div className="tab-switch" role="tablist">
+            <button
+              role="tab"
+              className={`tab-btn ${tab === 'review' ? 'active' : ''}`}
+              type="button"
+              onClick={() => setTab('review')}
+            >
+              候选版本对照台
+            </button>
+            <button
+              role="tab"
+              className={`tab-btn ${tab === 'rules' ? 'active' : ''}`}
+              type="button"
+              onClick={() => setTab('rules')}
+            >
+              清洗规则清单
+            </button>
+          </div>
+          <button className="btn" type="button" onClick={() => window.open(`${ENDPOINT}/export`, '_blank')}>
+            导出数据清洗清单
+          </button>
+        </div>
+      </header>
+
+      {tab === 'review' ? <ReviewWorkbench /> : <RuleListTab />}
     </section>
   )
 }

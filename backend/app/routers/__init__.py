@@ -20,9 +20,10 @@ from app.routers import validator as router_validator
 from app.routers import storage as router_storage
 from app.routers import monitor as router_monitor
 from app.routers import cleanse as router_cleanse
+from app.routers import cleanse_review as router_cleanse_review
 from app.routers import delta as router_delta
 from app.routers import export as router_export
 from app.routers import rpaflow as router_rpaflow
 from app.routers import auth as router_auth
 
-ROUTERS = [router_site, router_template, router_proxy, router_spider, router_schedule, router_antibot, router_ratelimit, router_retry, router_extractor, router_pipeline, router_validator, router_storage, router_monitor, router_cleanse, router_delta, router_export, router_rpaflow, router_auth]
+ROUTERS = [router_site, router_template, router_proxy, router_spider, router_schedule, router_antibot, router_ratelimit, router_retry, router_extractor, router_pipeline, router_validator, router_storage, router_monitor, router_cleanse, router_cleanse_review, router_delta, router_export, router_rpaflow, router_auth]
